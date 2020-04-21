@@ -11,6 +11,7 @@ import (
 	_ "image/jpeg" // support jpeg
 	_ "image/png"  // support png
 	"io"
+	"math"
 
 	"github.com/g3n/engine/geometry"
 	"github.com/g3n/engine/graphic"
@@ -50,8 +51,10 @@ func NewImage(r io.Reader) *graphic.Mesh {
 	ys := float32(img.Bounds().Size().Y)
 	geom := geometry.NewPlane(imageWidthInMeters, imageWidthInMeters*(ys/xs))
 	mat := material.NewStandard(&math32.Color{R: 1, G: 1, B: 1})
+	// mat.SetSide(material.SideFront)
 	mat.SetSide(material.SideDouble)
 	mat.AddTexture(tex)
 	mesh := graphic.NewMesh(geom, mat)
+	mesh.RotateX(math.Pi / 2.0)
 	return mesh
 }

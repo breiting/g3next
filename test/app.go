@@ -68,8 +68,6 @@ func NewApp(width, height int, title string) *App {
 
 	a.Subscribe(window.OnKeyDown, a.onKey)
 	a.Subscribe(window.OnKeyUp, a.onKey)
-	// a.Subscribe(window.OnMouseDown, a.onMouseDown)
-	// a.Subscribe(window.OnCursor, a.onMouseMove)
 	return a
 }
 

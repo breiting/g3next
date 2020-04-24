@@ -6,6 +6,7 @@ package entity
 
 import (
 	"bytes"
+	"fmt"
 	"image"
 	"image/draw"
 	_ "image/jpeg" // support jpeg
@@ -36,7 +37,8 @@ func NewImage(r io.Reader) *graphic.Mesh {
 
 	img, _, err := image.Decode(r)
 	if err != nil {
-		panic(err)
+		fmt.Println("Unsupported stride for image")
+		return graphic.NewMesh(geometry.NewPlane(1, 1), material.NewStandard(&math32.Color{R: 1, G: 1, B: 1}))
 	}
 
 	// Converts image to RGBA format

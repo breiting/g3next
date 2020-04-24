@@ -12,8 +12,8 @@ github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 h1:DACJavvAHhabrF0
 github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0/go.mod h1:E/TSTwGwJL78qG/PmXZO1EjYhfJinVAhrmmHX6Z8B9k=
 github.com/gookit/color v1.2.2/go.mod h1:AhIE+pS6D4Ql0SQWbBeXPHw7gY0/sjHoA4s/n1KB7xg=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
-github.com/roboticeyes/gorexfile v0.3.3 h1:kGCbIbnHAOIaBznQLkdyC0hnjVg7Jp/FxN8MAtg6V38=
-github.com/roboticeyes/gorexfile v0.3.3/go.mod h1:9xn/izVknHxmi4VQe1XJFg+l4vtbfy0sMfGQn/rvmC0=
+github.com/roboticeyes/gorexfile v0.3.4-0.20200402190804-225024cc3871 h1:97e7LXMHKz9s1vOXY9eoOSbw9fuXk64XnwDh7Zoo0vw=
+github.com/roboticeyes/gorexfile v0.3.4-0.20200402190804-225024cc3871/go.mod h1:9xn/izVknHxmi4VQe1XJFg+l4vtbfy0sMfGQn/rvmC0=
 github.com/russross/blackfriday/v2 v2.0.1/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
 github.com/shurcooL/sanitized_anchor_name v1.0.0/go.mod h1:1NzhyTcUVG4SuEtjjoZeVRXNmyL/1OwPU0+IJeTBvfc=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=

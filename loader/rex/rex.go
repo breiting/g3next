@@ -101,6 +101,13 @@ func CreateRexNode(rex *rexfile.File, name string) (*core.Node, error) {
 		group.Add(lines)
 	}
 
+	for _, ls := range rex.LineSets {
+		fmt.Println(ls.Colors)
+		mat := material.NewStandard(&math32.Color{R: ls.Colors.X(), G: ls.Colors.Y(), B: ls.Colors.Z()})
+		lines := graphic.NewLineStrip(geom.NewRexLineSetGeometry(ls), mat)
+		group.Add(lines)
+	}
+
 	// TODO currently unsupported
 	// if len(rex.SceneNodes) > 0 {
 	// 	for _, node := range rex.SceneNodes {

@@ -19,7 +19,7 @@ import (
 )
 
 var (
-	defaultMeshMaterial = &math32.Color{R: 1, G: 1, B: 1}
+	defaultMeshMaterial = &math32.Color{R: 1, G: 0, B: 1}
 )
 
 type RexMesh struct {
@@ -36,7 +36,13 @@ func NewRexMesh(data rexfile.Mesh) *RexMesh {
 		data: data,
 	}
 	geom := geom.NewRexMeshGeometry(data)
-	mesh.Mesh = graphic.NewMesh(geom, material.NewStandard(defaultMeshMaterial))
+
+	// select material based on vertex coloring
+	if geom.VBO(gls.VertexColor) != nil {
+		mesh.Mesh = graphic.NewMesh(geom, material.NewBasic())
+	} else {
+		mesh.Mesh = graphic.NewMesh(geom, material.NewStandard(defaultMeshMaterial))
+	}
 	if data.Name != "" {
 		mesh.Mesh.SetName(data.Name)
 	} else {
@@ -53,7 +59,13 @@ func (m *RexMesh) OfferMaterial(material rexfile.Material) {
 		return
 	}
 
-	fmt.Printf("Set material %d for mesh %d\n", material.ID, m.data.ID)
+	// Ignore StandardMaterial if VertexColor is available
+	if m.Graphic.GetGeometry().VBO(gls.VertexColor) != nil {
+		fmt.Printf("Ignoring Material since vertex colors are available (mesh: %d)\n", m.data.ID)
+		return
+		// } else {
+		// 	fmt.Printf("Set material %d for mesh %d\n", material.ID, m.data.ID)
+	}
 
 	m.phong = mat.NewRexStandardMaterial(material)
 	m.Graphic.ClearMaterials()

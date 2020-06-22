@@ -86,7 +86,9 @@ func CreateRexNode(rex *rexfile.File, name string) (*core.Node, error) {
 	}
 
 	for _, m := range meshes {
-		group.Add(m)
+		// IMPORTANT: do not directly add the wrapped object, but only the embedded Mesh,
+		// otherwise the collider is not working!
+		group.Add(m.Mesh)
 	}
 
 	for _, pointList := range rex.PointLists {

@@ -7,6 +7,7 @@ import (
 	"image/draw"
 	_ "image/jpeg" // support jpeg
 	_ "image/png"  // support png
+	"math/rand"
 
 	"github.com/breiting/g3next/geom"
 	"github.com/breiting/g3next/mat"
@@ -41,7 +42,13 @@ func NewRexMesh(data rexfile.Mesh) *RexMesh {
 	if geom.VBO(gls.VertexColor) != nil {
 		mesh.Mesh = graphic.NewMesh(geom, material.NewBasic())
 	} else {
-		mesh.Mesh = graphic.NewMesh(geom, material.NewStandard(defaultMeshMaterial))
+		mesh.Mesh = graphic.NewMesh(geom, material.NewStandard(
+			&math32.Color{
+				R: rand.Float32(),
+				G: rand.Float32(),
+				B: rand.Float32(),
+			},
+		))
 	}
 	if data.Name != "" {
 		mesh.Mesh.SetName(data.Name)
@@ -55,6 +62,7 @@ func NewRexMesh(data rexfile.Mesh) *RexMesh {
 // materialID is matching, the material is replaced
 func (m *RexMesh) OfferMaterial(material rexfile.Material) {
 
+	return
 	if material.ID != m.data.MaterialID {
 		return
 	}
@@ -77,6 +85,7 @@ func (m *RexMesh) OfferMaterial(material rexfile.Material) {
 // ID is matching, the texture is applied
 func (m *RexMesh) OfferTexture(img rexfile.Image) {
 
+	return
 	if img.ID != m.material.KdTextureID {
 		return
 	}

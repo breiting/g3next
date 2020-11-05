@@ -10,12 +10,12 @@ import (
 	"github.com/breiting/g3next/entity"
 	"github.com/breiting/g3next/geom"
 	"github.com/breiting/g3next/loader/rex"
+	"github.com/breiting/g3next/mover"
 	"github.com/g3n/engine/camera"
 	"github.com/g3n/engine/core"
 	"github.com/g3n/engine/graphic"
 	"github.com/g3n/engine/material"
 	"github.com/g3n/engine/math32"
-	"github.com/g3n/engine/util/helper"
 	"github.com/g3n/engine/window"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/roboticeyes/gorexfile/encoding/rexfile"
@@ -68,6 +68,20 @@ func createRexTrack() *core.Node {
 	return container
 }
 
+func createRexTrackFromFile() *core.Node {
+
+	reader, _ := os.Open("route.rex")
+	defer reader.Close()
+
+	decoder := rex.NewDecoderReader(reader)
+	rexNode, err := decoder.NewGroup("rex")
+	if err != nil {
+		panic(err)
+	}
+	rexNode.SetRotationX(math.Pi / 2.0)
+	return rexNode
+}
+
 func createRexFile() *core.Node {
 	resp, err := http.Get(sampleRexFileUrl)
 
@@ -106,13 +120,14 @@ func (a *App) setupScene() {
 	a.scene = core.NewNode()
 
 	a.scene.SetRotationX(-math.Pi / 2.0)
-	a.root.Add(helper.NewGrid(gridSize, 1, &math32.Color{R: 0.4, G: 0.4, B: 0.4}))
-	a.scene.Add(helper.NewAxes(1))
+	// a.root.Add(helper.NewGrid(gridSize, 1, &math32.Color{R: 0.4, G: 0.4, B: 0.4}))
+	// a.scene.Add(helper.NewAxes(1))
 	a.root.Add(a.scene)
 
 	// begin add entities
 	// a.scene.Add(createImage())
 	a.scene.Add(createRexFile())
+	// a.scene.Add(createRexTrackFromFile())
 	// a.scene.Add(createTerrain())
 	// a.scene.Add(createRexTrack())
 	// end add entities
@@ -132,9 +147,22 @@ func (a *App) setupScene() {
 	a.camera = camera.New(float32(w) / float32(h))
 	a.root.Add(a.camera)
 	a.orbit = camera.NewOrbitControl(a.camera)
-	a.camera.SetPosition(10, 10, 10)
+	// a.camera.SetPosition(10, 10, 10)
+	a.camera.SetPosition(1, 1, 1)
 	a.camera.UpdateSize(5)
 	a.camera.LookAt(math32.NewVector3(0, 0, 0), math32.NewVector3(0, 1, 0))
 	a.camera.SetProjection(camera.Perspective)
 	a.orbit.Reset()
+
+	f, _ := os.Open("route.rex")
+	d := rexfile.NewDecoder(f)
+	_, rex, _ := d.Decode()
+
+	var path []*math32.Vector3
+	for _, v := range rex.Tracks[0].Points {
+		path = append(path, math32.NewVector3(v.Point.X(), v.Point.Y(), v.Point.Z()))
+	}
+
+	a.cameramover = mover.NewCameraPathMover(path, a.camera)
+	a.root.Add(a.cameramover)
 }

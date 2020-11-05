@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/breiting/g3next/mover"
 	"github.com/g3n/engine/camera"
 	"github.com/g3n/engine/core"
+	"github.com/g3n/engine/experimental/collision"
 	"github.com/g3n/engine/gls"
 	"github.com/g3n/engine/graphic"
 	"github.com/g3n/engine/light"
@@ -31,9 +33,11 @@ type App struct {
 
 	showWireframe bool
 
-	camera     *camera.Camera
-	orbit      *camera.OrbitControl
-	frameRater *util.FrameRater
+	camera      *camera.Camera
+	orbit       *camera.OrbitControl
+	cameramover *mover.CameraPathMover
+	frameRater  *util.FrameRater
+	rayCaster   *collision.Raycaster
 }
 
 // NewApp creates a new app
@@ -68,7 +72,28 @@ func NewApp(width, height int, title string) *App {
 
 	a.Subscribe(window.OnKeyDown, a.onKey)
 	a.Subscribe(window.OnKeyUp, a.onKey)
+	a.Subscribe(window.OnCursor, a.onMouseMove)
+
+	a.rayCaster = collision.NewRaycaster(&math32.Vector3{}, &math32.Vector3{})
+
 	return a
+}
+
+func (a *App) onMouseMove(evname string, ev interface{}) {
+
+	mouseEvent := ev.(*window.CursorEvent)
+	width, height := a.GetFramebufferSize()
+
+	x := 2*(mouseEvent.Xpos/float32(width)) - 1
+	y := -2*(mouseEvent.Ypos/float32(height)) + 1
+	a.rayCaster.SetFromCamera(a.camera, x, y)
+
+	intersects := a.rayCaster.IntersectObjects(a.scene.Children(), true)
+	if len(intersects) == 0 {
+		fmt.Println("nothing found")
+		return
+	}
+	fmt.Printf("World position: %v\n", intersects[0].Point)
 }
 
 func (a *App) onKey(evname string, ev interface{}) {
@@ -85,6 +110,11 @@ func (a *App) onKey(evname string, ev interface{}) {
 	case window.KeyQ:
 		if state == true {
 			a.Window().SetShouldClose(true)
+		}
+	case window.KeySpace:
+		if state == true {
+			a.cameramover.ToggleEnabled()
+			a.orbit.SetTarget(*a.cameramover.CurrentLocation())
 		}
 	case window.KeyF1:
 		if state == true {
@@ -146,6 +176,8 @@ func (a *App) render(deltaTime time.Duration) {
 
 	camPos := a.camera.Position()
 	a.headLight.SetPosition(camPos.X, camPos.Y, camPos.Z)
+
+	a.cameramover.Update(deltaTime)
 
 	err := a.renderer.Render(a.root, a.camera)
 	if err != nil {

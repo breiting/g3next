@@ -62,7 +62,6 @@ func NewRexMesh(data rexfile.Mesh) *RexMesh {
 // materialID is matching, the material is replaced
 func (m *RexMesh) OfferMaterial(material rexfile.Material) {
 
-	return
 	if material.ID != m.data.MaterialID {
 		return
 	}
@@ -85,7 +84,6 @@ func (m *RexMesh) OfferMaterial(material rexfile.Material) {
 // ID is matching, the texture is applied
 func (m *RexMesh) OfferTexture(img rexfile.Image) {
 
-	return
 	if img.ID != m.material.KdTextureID {
 		return
 	}

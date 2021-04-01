@@ -92,7 +92,12 @@ func CreateRexNode(rex *rexfile.File, name string) (*core.Node, error) {
 	}
 
 	for _, pointList := range rex.PointLists {
-		mat := material.NewBasic()
+		var mat material.IMaterial
+		if len(pointList.Colors) > 0 {
+			mat = material.NewBasic()
+		} else {
+			mat = material.NewStandard(&math32.Color{R: 0.42, G: 0.64, B: 0.42})
+		}
 		points := graphic.NewPoints(geom.NewRexPointGeometry(pointList), mat)
 		group.Add(points)
 	}
